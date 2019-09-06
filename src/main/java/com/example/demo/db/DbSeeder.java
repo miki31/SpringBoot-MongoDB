@@ -3,15 +3,23 @@ package com.example.demo.db;
 import com.example.demo.model.Address;
 import com.example.demo.model.Hotel;
 import com.example.demo.model.Review;
+import com.example.demo.repository.HotelRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 @Component
 public class DbSeeder implements CommandLineRunner {
+    private HotelRepository hotelRepository;
+
+    public DbSeeder(HotelRepository hotelRepository) {
+        this.hotelRepository = hotelRepository;
+    }
+
     @Override
     public void run(String... args) throws Exception {
         Hotel marriot = new Hotel(
@@ -63,5 +71,12 @@ public class DbSeeder implements CommandLineRunner {
                 new ArrayList<>()
 
         );
+
+        //drop all hotels
+        this.hotelRepository.deleteAll();
+
+        // add aur hotels to database
+        List<Hotel> hotelList = Arrays.asList(marriot, ibis, sofitel, i_f);
+        this.hotelRepository.saveAll(hotelList);
     }
 }
