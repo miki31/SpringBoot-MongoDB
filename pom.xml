@@ -43,6 +43,15 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.querydsl/querydsl-mongodb -->
+        <dependency>
+            <groupId>com.querydsl</groupId>
+            <artifactId>querydsl-mongodb</artifactId>
+            <version>4.2.1</version>
+        </dependency>
+
+
     </dependencies>
 
     <build>
