@@ -1,7 +1,9 @@
 package com.example.demo.controller;
 
 import com.example.demo.model.Hotel;
+import com.example.demo.model.QHotel;
 import com.example.demo.repository.HotelRepository;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -56,6 +58,40 @@ public class HotelController {
     @GetMapping("/address/{city}")
     public List<Hotel> getByCity(@PathVariable("city") String city) {
         List<Hotel> hotels = this.hotelRepository.findByCity(city);
+        return hotels;
+    }
+
+    @GetMapping("/country/{country}")
+    public List<Hotel> getByCountry(@PathVariable("country") String country){
+        // this class created automaticaly after maven-->pakage in folder "target/..."
+        // create a query class
+        QHotel qHotel = new QHotel("hotel");
+
+        // using a query class we can create a filter
+        BooleanExpression filterByCountry = qHotel.address.country.eq(country);
+
+        // we can then pass the filters to the findALL()  method
+        List<Hotel> hotels = (List<Hotel>) this.hotelRepository.findAll(filterByCountry);
+
+        return hotels;
+    }
+
+    @GetMapping("/recommend")
+    public List<Hotel> getRecommended(){
+        final int maxPrice = 100;
+        final int minRating = 7;
+
+        // this class created automaticaly after maven-->pakage in folder "target/..."
+        // create a query class
+        QHotel qHotel = new QHotel("hotel");
+
+        // using a query class we can create a filter
+        BooleanExpression filterByPrice = qHotel.pricePerNight.lt(maxPrice);
+        BooleanExpression filterByRating = qHotel.reviews.any().rating.gt(minRating);
+
+        // we can then pass the filters to the findALL()  method
+        List<Hotel> hotels = (List<Hotel>) this.hotelRepository.findAll(filterByPrice.and(filterByRating));
+
         return hotels;
     }
 }
